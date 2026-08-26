@@ -1,0 +1,88 @@
+<!--
+title: Kibi Label, a showcase site for a beauty studio in Chicoutimi | Pixelrock
+description: Website for a Chicoutimi beauty studio: online booking, content the owner manages herself through a CMS, framework-free for performance and local SEO.
+nav: realisations
+canonical: /en/projet-kibi-label.html
+-->
+
+<section class="phead">
+  <div class="wrap--narrow phead__inner">
+    <p class="crumb"><a href="realisations.html">Work</a> &nbsp;/&nbsp; Kibi Label</p>
+    <div class="case-head">
+      <span class="logo-tile"><img src="assets/kibi.png" alt="Kibi Label logo" width="128" height="128"></span>
+      <div>
+        <h1>A beauty studio that runs itself.</h1>
+        <p class="lede" style="margin-top:0.9rem">A site that books appointments while the esthetician is in a treatment room, and that the client updates herself without ever touching the code.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 2rem">
+  <div class="wrap--narrow">
+    <dl class="case-facts">
+      <div class="case-fact"><dt>Type</dt><dd>Showcase site with an admin area</dd></div>
+      <div class="case-fact"><dt>Sector</dt><dd>Skincare and esthetics &mdash; Chicoutimi</dd></div>
+      <div class="case-fact"><dt>Booking</dt><dd>Online, 24 hours a day</dd></div>
+      <div class="case-fact"><dt>My role</dt><dd>Solo, from design to deployment</dd></div>
+      <div class="case-fact"><dt>Live at</dt><dd><a href="https://kibilabel.ca" target="_blank" rel="noopener">kibilabel.ca</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap--narrow prose">
+
+    <section>
+      <h2>The context</h2>
+      <p>Kibi Label is a beauty and skincare studio based in Chicoutimi. Like most one-person service businesses, time is the scarce resource: every call answered during a treatment is an interruption, and every missed call is a lost appointment.</p>
+      <p>The site had to do three things: lay out the services clearly, show off the work, and turn visitors into confirmed appointments without going through the phone.</p>
+    </section>
+
+    <section>
+      <h2>The real problem</h2>
+      <p>The classic trap with a small-business showcase site is that it freezes on the day it ships. Prices change, a treatment gets added, a better photo comes along &mdash; and you have to call the developer back, wait, pay. Six months later the site lists the wrong prices and nobody dares touch it.</p>
+      <p>So my starting constraint was clear: the client had to be able to change everything herself, with no risk of breaking anything, and without me.</p>
+    </section>
+
+    <section>
+      <h2>The solution</h2>
+      <p>I built a static site, framework-free, fed by a headless CMS. The content lives in a separate admin area; the site fetches it on load. The client writes her copy, uploads her photos, adds a treatment or changes a price in a simple interface, and the site reflects the change.</p>
+      <p>Booking goes through an online booking widget, preceded by a booking policy acceptance dialog that I rewrote from scratch so it would be readable on a phone. The contact form works without a server.</p>
+    </section>
+
+    <section>
+      <h2>The technical choices, and why</h2>
+      <p><strong>No framework.</strong> Semantic HTML, modern CSS (variables, Flexbox, Grid) and plain JavaScript. For a site this size, React or Vue would have added weight to download and a layer between Google and the content, without giving anything back. Performance and search came ahead of developer comfort.</p>
+      <p><strong>A headless CMS (Sanity).</strong> I wrote custom content schemas modelled on the vocabulary of the trade &mdash; treatments, categories, prices &mdash; rather than on a technical structure. That is what makes the admin area understandable without training.</p>
+      <p><strong>No-reload navigation where it counts.</strong> On the services page and the treatment guide, moving from the list to the detail goes through the browser History API: the page does not reload, but each treatment keeps its own address, shareable and indexable.</p>
+      <p><strong>Images served from a CDN, lazy loading, attention to LCP.</strong> On a photo-heavy site, that is where perceived speed is won or lost.</p>
+      <p><strong>Continuous deployment.</strong> A push to GitHub updates the site automatically. DNS is managed in the same place, which cuts down the number of accounts the client has to keep track of.</p>
+    </section>
+
+    <section>
+      <h2>Key features</h2>
+      <ul>
+        <li><strong>Online booking</strong>, available at any hour, with the booking policy accepted up front.</li>
+        <li><strong>Treatment catalogue</strong> with categories, descriptions and prices, fully editable by the client.</li>
+        <li><strong>The treatment guide</strong>: an editorial module pairing photos with explanations, built to answer questions before the first appointment.</li>
+        <li><strong>Dark mode and light mode</strong>, remembered from one visit to the next.</li>
+        <li><strong>Contact form</strong> with no infrastructure to maintain.</li>
+        <li><strong>Local SEO</strong>: verification in Google Search Console, sitemap, tags and wording aimed at Chicoutimi and Saguenay.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>What I took away from it</h2>
+      <p>The most useful work was not technical. It was modelling the content the way the client thinks about it &mdash; her treatments, her categories, her vocabulary &mdash; rather than the way a database would file it. A badly named schema produces an admin area nobody dares open.</p>
+      <p>Second lesson: choosing to skip the framework takes more discipline, not less. With no structure imposed on me, holding it is my job.</p>
+    </section>
+
+    <section>
+      <h2>The result</h2>
+      <p>The site is in production. The client manages her content and her prices without any input from me, appointments are booked online at any hour, and every code update goes live automatically.</p>
+      <p>This is exactly the model I offer service businesses in the region under the <a href="services.html#socle">The Base</a> package.</p>
+    </section>
+
+  </div>
+</section>

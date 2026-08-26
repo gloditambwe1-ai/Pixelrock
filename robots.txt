@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /merci.html
+Disallow: /en/thank-you.html
+
+Sitemap: https://pixelrock.net/sitemap.xml

@@ -1,0 +1,95 @@
+<!--
+title: GNOSIS, application d'apprentissage par IA — étude de cas | Pixelrock
+description: Application web de génération de cours par intelligence artificielle : quatre modes d'apprentissage, tuteur ancré sur les documents de l'utilisateur, quatre langues, application Android.
+nav: realisations
+canonical: /projet-gnosis.html
+-->
+
+<section class="phead">
+  <div class="wrap--narrow phead__inner">
+    <p class="crumb"><a href="realisations.html">Réalisations</a> &nbsp;/&nbsp; GNOSIS</p>
+    <div class="case-head">
+      <span class="logo-tile"><img src="assets/gnosis.png" alt="Logo de GNOSIS" width="128" height="128"></span>
+      <div>
+        <h1>Un cours complet sur n'importe quel sujet, généré à la demande.</h1>
+        <p class="lede" style="margin-top:0.9rem">On saisit un sujet. On reçoit un plan interactif, puis des leçons rédigées module par module, avec exemples travaillés, schémas, quiz et sources.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 2rem">
+  <div class="wrap--narrow">
+    <dl class="case-facts">
+      <div class="case-fact"><dt>Nature</dt><dd>Application web et mobile</dd></div>
+      <div class="case-fact"><dt>Langues</dt><dd>Français, anglais, espagnol, turc</dd></div>
+      <div class="case-fact"><dt>Mon rôle</dt><dd>Produit, direction artistique, développement, intégration IA</dd></div>
+      <div class="case-fact"><dt>En ligne</dt><dd><a href="https://gnosislearn.com" target="_blank" rel="noopener">gnosislearn.com</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap--narrow prose">
+
+    <section>
+      <h2>L'intention</h2>
+      <p>Apprendre un sujet nouveau demande d'abord de savoir par où commencer. Les ressources existent, mais elles sont éparpillées, inégales, et rarement organisées dans un ordre qui tient debout pour un débutant.</p>
+      <p>GNOSIS part de là : l'utilisateur saisit un sujet, l'application propose un plan qu'il peut ajuster, puis rédige le cours module par module, avec un rendu progressif du texte au fil de l'écriture. Le produit a été conçu en français d'abord, puis rendu entièrement multilingue.</p>
+    </section>
+
+    <section>
+      <h2>Quatre façons d'apprendre</h2>
+      <p>Plutôt qu'un seul chatbot polyvalent, j'ai découpé l'expérience en quatre modes, chacun avec son identité empruntée à la mythologie grecque et son propre comportement.</p>
+      <ul>
+        <li><strong>Muses</strong> &mdash; génération d'un cours complet à partir d'un sujet libre.</li>
+        <li><strong>Prométhée</strong> &mdash; apprentissage guidé, pas à pas.</li>
+        <li><strong>Chiron</strong> &mdash; tuteur ancré sur les documents de l'utilisateur : les fichiers importés sont découpés, vectorisés et retrouvés par recherche sémantique, de sorte que les réponses portent sur <em>ses</em> documents et non sur des généralités.</li>
+        <li><strong>Dédale</strong> &mdash; tuteur avancé pour un devoir ou un travail précis, adossé à un modèle plus puissant.</li>
+      </ul>
+      <p>Ce découpage n'est pas cosmétique : il permet de donner à chaque mode ses propres consignes, son propre modèle et son propre coût, au lieu d'un compromis unique qui ne sert bien personne.</p>
+    </section>
+
+    <section>
+      <h2>Ce qui rend un cours lisible</h2>
+      <p>Un mur de texte généré n'est pas un cours. L'application produit automatiquement, selon le sujet, des tableaux, des schémas vectoriels (processus, cycles, hiérarchies, frises chronologiques) ou des illustrations annotées, en plus du rendu mathématique. Le cours s'exporte en PDF fidèle à l'identité visuelle du site.</p>
+      <p>Une recherche web optionnelle permet d'appuyer le contenu sur de vraies références plutôt que sur la seule mémoire du modèle.</p>
+    </section>
+
+    <section>
+      <h2>Rester, pas seulement venir</h2>
+      <p>La génération de contenu attire ; elle ne retient pas. J'ai ajouté une couche de progression &mdash; points d'expérience, séries de jours consécutifs, rangs, classement mondial &mdash; et une dimension sociale complète : amis, messagerie privée, communautés et discussions de groupe, le tout en temps réel.</p>
+      <p>Le catalogue compte 200 sujets déjà préparés, dans les quatre langues, pour que la première visite ne commence pas devant un champ vide.</p>
+    </section>
+
+    <section>
+      <h2>Les choix techniques, et pourquoi</h2>
+      <p><strong>Front-end sans framework, en multi-pages.</strong> HTML, CSS et JavaScript natifs. Le pari : garder le contrôle du poids envoyé au navigateur et du contenu servi aux moteurs de recherche, sur une application pourtant riche.</p>
+      <p><strong>Clés d'API jamais exposées.</strong> C'est le point de sécurité central. Les appels aux modèles passent par des fonctions exécutées en périphérie qui servent de relais authentifiés : les clés restent côté serveur, et chaque appel est protégé par jeton. Une application front-end qui appelle une API payante directement depuis le navigateur est une facture ouverte pour n'importe qui.</p>
+      <p><strong>Supabase pour le socle.</strong> Authentification par jeton, base PostgreSQL avec sécurité au niveau des lignes &mdash; chaque utilisateur ne peut lire que ses propres données, et la règle est appliquée par la base, pas par le code client &mdash; et diffusion en temps réel pour la messagerie.</p>
+      <p><strong>Mobile.</strong> Application web progressive, plus une application Android empaquetée, avec une navigation calquée sur les habitudes mobiles et la gestion des zones sûres de l'écran. La version iOS est en cours.</p>
+      <p><strong>Référencement.</strong> Données structurées, balises de partage social, plan de site &mdash; parce qu'une application ne se découvre pas uniquement par la publicité.</p>
+    </section>
+
+    <section>
+      <h2>Direction artistique</h2>
+      <p>J'ai voulu éviter l'esthétique par défaut des outils d'IA. L'univers est inspiré de l'Antiquité grecque, traité de façon éditoriale et monumentale : une mascotte originale, Atlas, jeune Titan portant une voûte céleste étoilée, déclinée en scènes animées propres à chaque page ; un logo qui est cette voûte céleste ; plusieurs thèmes de couleurs nommés d'après des matières (Céramique, Porphyre, Vert-de-gris, parchemin) ; un méandre grec en filigrane ; et un vrai travail typographique.</p>
+    </section>
+
+    <section>
+      <h2>Les défis</h2>
+      <ul>
+        <li><strong>Sécuriser les clés</strong> sans back-end traditionnel, en transformant des fonctions de périphérie en relais authentifiés.</li>
+        <li><strong>Le tuteur ancré sur documents</strong> : import, découpage, vectorisation et recherche sémantique, avec des réponses qui restent fidèles à la source.</li>
+        <li><strong>Un pipeline de rendu robuste</strong> qui combine Markdown, mathématiques, génération de schémas vectoriels et export PDF conforme au style du site &mdash; chaque brique cassant volontiers les autres.</li>
+        <li><strong>Une expérience mobile et multilingue soignée sans framework</strong>, avec un système d'internationalisation écrit sur mesure.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ce que ça démontre</h2>
+      <p>GNOSIS est un projet solo qui couvre la conception produit, la direction artistique, le front-end, le back-end et l'intégration de modèles d'IA. C'est le genre de portée que couvre le forfait <a href="services.html#chantier">Le Chantier</a> : un produit complet, pensé, sécurisé et déployé par une seule personne.</p>
+    </section>
+
+  </div>
+</section>

@@ -1,0 +1,95 @@
+<!--
+title: GNOSIS, an AI learning app — case study | Pixelrock
+description: A web app that generates courses with artificial intelligence: four learning modes, a tutor grounded in the user's own documents, four languages, an Android app.
+nav: realisations
+canonical: /en/projet-gnosis.html
+-->
+
+<section class="phead">
+  <div class="wrap--narrow phead__inner">
+    <p class="crumb"><a href="realisations.html">Work</a> &nbsp;/&nbsp; GNOSIS</p>
+    <div class="case-head">
+      <span class="logo-tile"><img src="assets/gnosis.png" alt="GNOSIS logo" width="128" height="128"></span>
+      <div>
+        <h1>A full course on any subject, generated on demand.</h1>
+        <p class="lede" style="margin-top:0.9rem">You enter a subject. You get an interactive outline, then lessons written module by module, with worked examples, diagrams, quizzes and sources.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:0 0 2rem">
+  <div class="wrap--narrow">
+    <dl class="case-facts">
+      <div class="case-fact"><dt>Type</dt><dd>Web and mobile app</dd></div>
+      <div class="case-fact"><dt>Languages</dt><dd>French, English, Spanish, Turkish</dd></div>
+      <div class="case-fact"><dt>My role</dt><dd>Product, art direction, development, AI integration</dd></div>
+      <div class="case-fact"><dt>Online</dt><dd><a href="https://gnosislearn.com" target="_blank" rel="noopener">gnosislearn.com</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap--narrow prose">
+
+    <section>
+      <h2>The intent</h2>
+      <p>Learning a new subject starts with knowing where to begin. The resources exist, but they are scattered, uneven, and rarely arranged in an order that holds up for a beginner.</p>
+      <p>GNOSIS starts there: the user enters a subject, the app proposes an outline they can adjust, then writes the course module by module, rendering the text progressively as it is written. The product was designed in French first, then made fully multilingual.</p>
+    </section>
+
+    <section>
+      <h2>Four ways to learn</h2>
+      <p>Rather than a single all-purpose chatbot, I split the experience into four modes, each with its own identity borrowed from Greek mythology and its own behaviour.</p>
+      <ul>
+        <li><strong>Muses</strong> &mdash; generates a full course from any subject you choose.</li>
+        <li><strong>Prométhée</strong> &mdash; guided, step-by-step learning.</li>
+        <li><strong>Chiron</strong> &mdash; a tutor grounded in the user's own documents: uploaded files are chunked, embedded and retrieved through semantic search, so the answers are about <em>their</em> documents and not about generalities.</li>
+        <li><strong>Dédale</strong> &mdash; an advanced tutor for a specific assignment or piece of work, backed by a more powerful model.</li>
+      </ul>
+      <p>The split is not cosmetic: it lets me give each mode its own instructions, its own model and its own cost, instead of one compromise that serves nobody well.</p>
+    </section>
+
+    <section>
+      <h2>What makes a course readable</h2>
+      <p>A generated wall of text is not a course. Depending on the subject, the app automatically produces tables, vector diagrams (processes, cycles, hierarchies, timelines) or annotated illustrations, on top of math rendering. The course exports to PDF true to the site's visual identity.</p>
+      <p>An optional web search lets the content rest on real references rather than on the model's memory alone.</p>
+    </section>
+
+    <section>
+      <h2>Staying, not just arriving</h2>
+      <p>Content generation attracts; it does not retain. I added a progression layer &mdash; experience points, day streaks, ranks, a global leaderboard &mdash; and a full social dimension: friends, private messaging, communities and group discussions, all in real time.</p>
+      <p>The catalogue holds 200 topics already prepared, in all four languages, so the first visit does not start in front of an empty field.</p>
+    </section>
+
+    <section>
+      <h2>The technical choices, and why</h2>
+      <p><strong>Framework-free front-end, multi-page.</strong> Native HTML, CSS and JavaScript. The bet: keep control over the weight sent to the browser and the content served to search engines, on an app that is nonetheless rich.</p>
+      <p><strong>API keys never exposed.</strong> This is the central security point. Model calls go through edge functions that act as authenticated proxies: the keys stay server-side, and every call is token-protected. A front-end app that calls a paid API straight from the browser is an open tab for anyone.</p>
+      <p><strong>Supabase for the foundation.</strong> Token authentication, a PostgreSQL database with row-level security &mdash; each user can only read their own data, and the rule is enforced by the database, not by client code &mdash; and real-time broadcast for messaging.</p>
+      <p><strong>Mobile.</strong> A progressive web app, plus a packaged Android app, with navigation modelled on mobile habits and proper handling of the screen's safe areas. The iOS version is in progress.</p>
+      <p><strong>Search visibility.</strong> Structured data, social sharing tags, a sitemap &mdash; because an app is not discovered through advertising alone.</p>
+    </section>
+
+    <section>
+      <h2>Art direction</h2>
+      <p>I wanted to avoid the default aesthetic of AI tools. The world is drawn from Greek antiquity, treated in an editorial, monumental way: an original mascot, Atlas, a young Titan carrying a starry celestial vault, worked into animated scenes specific to each page; a logo that is that celestial vault; several colour themes named after materials (Céramique, Porphyre, Vert-de-gris, parchemin); a Greek key watermark; and real typographic work.</p>
+    </section>
+
+    <section>
+      <h2>The challenges</h2>
+      <ul>
+        <li><strong>Securing the keys</strong> without a traditional back-end, by turning edge functions into authenticated proxies.</li>
+        <li><strong>The document-grounded tutor</strong>: upload, chunking, embedding and semantic search, with answers that stay faithful to the source.</li>
+        <li><strong>A robust rendering pipeline</strong> combining Markdown, math, vector diagram generation and a PDF export that matches the site's style &mdash; each piece happy to break the others.</li>
+        <li><strong>A polished mobile and multilingual experience without a framework</strong>, with a custom-written internationalisation system.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>What it demonstrates</h2>
+      <p>GNOSIS is a solo project covering product design, art direction, front-end, back-end and AI model integration. That is the kind of scope the <a href="services.html#chantier">The Build</a> package covers: a complete product, thought through, secured and deployed by one person.</p>
+    </section>
+
+  </div>
+</section>

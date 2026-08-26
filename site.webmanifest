@@ -1,0 +1,35 @@
+{
+  "name": "Pixelrock — conception de sites web",
+  "short_name": "Pixelrock",
+  "description": "Conception de sites web au Saguenay–Lac-Saint-Jean et partout au Québec.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "lang": "fr-CA",
+  "dir": "ltr",
+  "background_color": "#E3E2DD",
+  "theme_color": "#202328",
+  "icons": [
+    {
+      "src": "/assets/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
