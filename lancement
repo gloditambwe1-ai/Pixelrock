@@ -1,0 +1,7 @@
+cd "C:\Dev projects\pixelrock"
+python3 build.py
+git add -A && git commit -m "Composition responsive" && git push
+
+cd "C:\Dev projects\pixelrock"
+python3 build.py
+git add -A && git commit -m "Empreinte sur les assets, correction du cache" && git push

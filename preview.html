@@ -946,10 +946,18 @@ select.cselect__native {
   .lang a, .lang span { padding: 0.3rem 0.42rem; }
 }
 
-@media (max-width: 480px) {
-  /* le nom cède la place : le pilier suffit à identifier la marque */
+@media (max-width: 380px) {
+  /* seulement sur les écrans les plus étroits : le pilier suffit à identifier la marque */
   .brand__name { display: none; }
   .brand__mark { width: 16px; height: 23px; }
+}
+
+/* la trame du héros est envahissante sur un écran étroit : elle passe au second plan */
+@media (max-width: 700px) {
+  .hero::before {
+    opacity: 0.32;
+    mask-image: radial-gradient(150% 60% at 50% 0%, #000 5%, transparent 65%);
+  }
 }
 
 @media (max-width: 400px) {

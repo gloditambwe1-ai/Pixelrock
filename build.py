@@ -22,6 +22,7 @@ Pour régénérer les icônes : python3 src/make_icons.py
 """
 
 import base64
+import hashlib
 import json
 from datetime import datetime, timezone
 import re
@@ -152,6 +153,16 @@ LANGS = {
         },
     },
 }
+
+# Noms de fichiers portant l'empreinte du contenu.
+# Sans ça, une feuille de style mise en cache pour un an continue d'être servie
+# alors que le HTML, lui, a changé : la page s'affiche à moitié stylée.
+ASSETS_VERSIONNES = {"css": "styles.css", "js": "app.js"}
+
+
+def empreinte(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:10]
+
 
 # posé avant le premier rendu : évite tout clignotement de thème
 BOOT = (
@@ -535,8 +546,8 @@ def render(lang, fr_name, meta, body):
 <meta name="twitter:image" content="{DOMAIN}/assets/og-image.png">
 {icons}
 {FONTS}
-<link rel="stylesheet" href="{p}assets/styles.css">
-<script src="{p}assets/app.js" defer></script>
+<link rel="stylesheet" href="{p}assets/{ASSETS_VERSIONNES["css"]}">
+<script src="{p}assets/{ASSETS_VERSIONNES["js"]}" defer></script>
 {json_ld(lang, fr_name, body, meta)}
 </head>
 <body>
@@ -655,10 +666,23 @@ NETLIFY = """[build]
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
 
+# Les feuilles de style et scripts portent une empreinte dans leur nom :
+# leur adresse change à chaque modification, le cache long est donc sans risque.
+[[headers]]
+  for = "/assets/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Les images gardent un nom fixe : une semaine, pour pouvoir les remplacer.
 [[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/*.html"
@@ -696,8 +720,15 @@ def build():
     out_assets.mkdir(parents=True, exist_ok=True)
     (OUT / "en").mkdir(exist_ok=True)
 
-    shutil.copy(SRC / "styles.css", out_assets / "styles.css")
-    shutil.copy(SRC / "app.js", out_assets / "app.js")
+    # une empreinte dans le nom : chaque modification produit une nouvelle adresse,
+    # donc aucun navigateur ni aucun CDN ne peut servir l'ancienne version
+    for motif in ("styles*.css", "app*.js"):
+        for vieux in out_assets.glob(motif):
+            vieux.unlink()
+    ASSETS_VERSIONNES["css"] = f"styles.{empreinte(SRC / 'styles.css')}.css"
+    ASSETS_VERSIONNES["js"] = f"app.{empreinte(SRC / 'app.js')}.js"
+    shutil.copy(SRC / "styles.css", out_assets / ASSETS_VERSIONNES["css"])
+    shutil.copy(SRC / "app.js", out_assets / ASSETS_VERSIONNES["js"])
     for f in ASSETS.iterdir():
         if f.suffix.lower() in {".png", ".ico", ".svg", ".webp", ".jpg"}:
             shutil.copy(f, out_assets / f.name)
