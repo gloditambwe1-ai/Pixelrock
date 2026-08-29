@@ -261,7 +261,119 @@ section { padding-block: var(--sec-pad); }
 }
 .nav__cta:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
-@media (max-width: 940px) { .nav__links { display: none; } }
+/* ---------- bascule de thème ----------
+   Par défaut le site suit le thème du système. Un clic bascule vers clair
+   ou sombre, et le choix est mémorisé. Trois états : auto, clair, sombre. */
+
+.theme {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; flex: none;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  cursor: pointer; padding: 0;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.theme:hover { border-color: var(--ink); }
+.theme:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* le glyphe reprend le vocabulaire du logo : un carré plein, vide ou à moitié */
+.theme__icon {
+  position: relative;
+  width: 16px; height: 16px;
+  border: 2px solid currentColor;
+  overflow: hidden;
+}
+.theme__icon::before {
+  content: ""; position: absolute; inset: 0;
+  background: currentColor;
+  transform-origin: left center;
+}
+.theme[data-state="auto"] .theme__icon::before { transform: scaleX(0.5); }
+.theme[data-state="light"] .theme__icon::before { transform: scaleX(0); }
+.theme[data-state="dark"] .theme__icon::before { transform: scaleX(1); }
+.theme[data-state="light"] { color: var(--accent); }
+.theme[data-state="dark"]  { color: var(--accent); }
+
+/* sans JavaScript la bascule ne peut rien faire : on ne l'affiche pas */
+.theme { display: none; }
+.js .theme { display: flex; }
+
+/* ---------- menu mobile ----------
+   Bâti sur <details> : il s'ouvre et se ferme sans JavaScript.
+   Le script n'ajoute que le confort (Échap, clic à l'extérieur). */
+
+.menu { display: none; position: static; }
+
+.menu__btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 38px;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  list-style: none;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.menu__btn::-webkit-details-marker { display: none; }
+.menu__btn::marker { content: ""; }
+
+.menu__btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.menu__bars, .menu__bars::before, .menu__bars::after {
+  display: block; width: 18px; height: 2px;
+  background: var(--ink);
+  transition: transform 160ms ease, background 120ms ease;
+}
+.menu__bars { position: relative; }
+.menu__bars::before, .menu__bars::after { content: ""; position: absolute; left: 0; }
+.menu__bars::before { top: -6px; }
+.menu__bars::after { top: 6px; }
+
+.menu[open] > .menu__btn { background: var(--accent); border-color: var(--accent); }
+.menu[open] .menu__bars { background: transparent; }
+.menu[open] .menu__bars::before { top: 0; transform: rotate(45deg); background: var(--on-accent); }
+.menu[open] .menu__bars::after  { top: 0; transform: rotate(-45deg); background: var(--on-accent); }
+
+/* un panneau en position absolue échappe au masquage automatique de <details> :
+   on le retire explicitement tant que le menu est fermé, sinon ses liens
+   restent atteignables au clavier et débordent de la barre. */
+.menu:not([open]) .menu__panel { display: none; }
+
+.menu__panel {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  z-index: 25;
+  background: var(--paper-raised);
+  border-bottom: 1px solid var(--ink);
+  box-shadow: 0 10px 0 -5px var(--block-shadow);
+  padding-block: 0.5rem 1.25rem;
+  max-height: calc(100dvh - 4.5rem);
+  overflow-y: auto;
+}
+
+.menu__links { display: flex; flex-direction: column; }
+
+.menu__links a {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg);
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  color: var(--ink);
+  padding: 0.9rem 0 0.9rem 0.85rem;
+  border-bottom: 1px solid var(--line);
+  border-left: 4px solid transparent;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.menu__links a:hover { border-left-color: var(--accent); }
+.menu__links a[aria-current="page"] { border-left-color: var(--accent); color: var(--accent); }
+
+.menu__cta { margin-top: 1.25rem; width: 100%; justify-content: center; }
+
+@media (max-width: 940px) {
+  .nav__links { display: none; }
+  .menu { display: block; }
+  /* sur petit écran le bouton de la barre cède la place au menu */
+  .nav__end > .nav__cta { display: none; }
+}
 
 /* ---------- héros d'accueil ---------- */
 
@@ -826,6 +938,9 @@ select.cselect__native {
   .nav__inner { gap: 0.6rem; }
   .nav__end { gap: 0.5rem; }
   .nav__cta { padding: 0.5rem 0.75rem; font-size: 0.8125rem; }
+  .theme { width: 34px; height: 34px; }
+  .theme__icon { width: 14px; height: 14px; }
+  .menu__btn { width: 38px; height: 36px; }
   .lang a, .lang span { padding: 0.3rem 0.42rem; }
 }
 
@@ -869,7 +984,9 @@ select.cselect__native {
       <a href="#realisations">Réalisations</a>
       <a href="#contact">Contact</a>
     </nav>
-    <div class="nav__end"><a class="nav__cta" href="#contact">Prendre rendez-vous</a></div>
+    <div class="nav__end">
+      <button class="theme" type="button" data-state="auto" data-label-auto="Thème : automatique. Passer au thème clair." data-label-light="Thème : clair. Passer au thème sombre." data-label-dark="Thème : sombre. Revenir au thème du système." aria-label="Thème : automatique. Passer au thème clair."><span class="theme__icon" aria-hidden="true"></span></button>
+      <a class="nav__cta" href="#contact">Prendre rendez-vous</a></div>
   </div>
 </header>
 <main id="haut">
@@ -1038,7 +1155,7 @@ select.cselect__native {
         <h3>L'entretien, pour ne plus y penser.</h3>
         <p><strong>Entièrement optionnel.</strong> Hébergement, nom de domaine, certificat de sécurité, mises à jour, sauvegardes quotidiennes, et trente minutes de modifications par mois. Vous pouvez le refuser au départ, le prendre plus tard, ou l'annuler en tout temps &mdash; et vous partez avec votre site.</p>
       </div>
-      <p class="entretien__price">50&nbsp;$<small>par mois</small></p>
+      <p class="entretien__price">dès 50&nbsp;$<small>par mois</small></p>
     </div>
   </div>
 </section>
@@ -1432,8 +1549,86 @@ select.cselect__native {
     paint();
   }
 
+
+  /* ---------------------------------------------------------------
+     Menu mobile : il fonctionne seul (<details>), le script n'ajoute
+     que la fermeture par Échap et par clic à l'extérieur.
+     --------------------------------------------------------------- */
+
+  function enhanceMenu() {
+    var menu = document.querySelector(".menu");
+    if (!menu) return;
+
+    document.addEventListener("pointerdown", function (e) {
+      if (menu.open && !menu.contains(e.target)) menu.open = false;
+    }, true);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && menu.open) {
+        menu.open = false;
+        var btn = menu.querySelector("summary");
+        if (btn) btn.focus();
+      }
+    });
+
+    // un changement de largeur qui repasse au-dessus du seuil referme le panneau
+    var wide = window.matchMedia("(min-width: 941px)");
+    var onWide = function (e) { if (e.matches) menu.open = false; };
+    wide.addEventListener ? wide.addEventListener("change", onWide) : wide.addListener(onWide);
+  }
+
+
+  /* ---------------------------------------------------------------
+     Bascule de thème.
+     Trois états : auto (le thème du système), clair, sombre.
+     Le choix est mémorisé ; « auto » efface la préférence enregistrée.
+     Le thème lui-même est posé dans <head> avant le rendu, pour éviter
+     tout clignotement au chargement.
+     --------------------------------------------------------------- */
+
+  function initTheme() {
+    var btn = document.querySelector(".theme");
+    if (!btn) return;
+
+    var root = document.documentElement;
+    var KEY = "pixelrock-theme";
+    var order = ["auto", "light", "dark"];
+
+    function read() {
+      try {
+        var v = localStorage.getItem(KEY);
+        return v === "light" || v === "dark" ? v : "auto";
+      } catch (e) { return "auto"; }
+    }
+
+    function apply(state) {
+      if (state === "auto") {
+        root.removeAttribute("data-theme");
+        try { localStorage.removeItem(KEY); } catch (e) {}
+      } else {
+        root.setAttribute("data-theme", state);
+        try { localStorage.setItem(KEY, state); } catch (e) {}
+      }
+      btn.dataset.state = state;
+      var label = btn.dataset["label" + state.charAt(0).toUpperCase() + state.slice(1)];
+      if (label) {
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("title", label);
+      }
+    }
+
+    btn.addEventListener("click", function () {
+      var next = order[(order.indexOf(read()) + 1) % order.length];
+      apply(next);
+    });
+
+    apply(read());
+  }
+
   function init() {
     document.querySelectorAll("select").forEach(enhanceSelect);
+    initTheme();
+    enhanceMenu();
   }
 
   if (document.readyState === "loading") {

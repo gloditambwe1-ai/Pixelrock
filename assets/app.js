@@ -200,8 +200,86 @@
     paint();
   }
 
+
+  /* ---------------------------------------------------------------
+     Menu mobile : il fonctionne seul (<details>), le script n'ajoute
+     que la fermeture par Échap et par clic à l'extérieur.
+     --------------------------------------------------------------- */
+
+  function enhanceMenu() {
+    var menu = document.querySelector(".menu");
+    if (!menu) return;
+
+    document.addEventListener("pointerdown", function (e) {
+      if (menu.open && !menu.contains(e.target)) menu.open = false;
+    }, true);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && menu.open) {
+        menu.open = false;
+        var btn = menu.querySelector("summary");
+        if (btn) btn.focus();
+      }
+    });
+
+    // un changement de largeur qui repasse au-dessus du seuil referme le panneau
+    var wide = window.matchMedia("(min-width: 941px)");
+    var onWide = function (e) { if (e.matches) menu.open = false; };
+    wide.addEventListener ? wide.addEventListener("change", onWide) : wide.addListener(onWide);
+  }
+
+
+  /* ---------------------------------------------------------------
+     Bascule de thème.
+     Trois états : auto (le thème du système), clair, sombre.
+     Le choix est mémorisé ; « auto » efface la préférence enregistrée.
+     Le thème lui-même est posé dans <head> avant le rendu, pour éviter
+     tout clignotement au chargement.
+     --------------------------------------------------------------- */
+
+  function initTheme() {
+    var btn = document.querySelector(".theme");
+    if (!btn) return;
+
+    var root = document.documentElement;
+    var KEY = "pixelrock-theme";
+    var order = ["auto", "light", "dark"];
+
+    function read() {
+      try {
+        var v = localStorage.getItem(KEY);
+        return v === "light" || v === "dark" ? v : "auto";
+      } catch (e) { return "auto"; }
+    }
+
+    function apply(state) {
+      if (state === "auto") {
+        root.removeAttribute("data-theme");
+        try { localStorage.removeItem(KEY); } catch (e) {}
+      } else {
+        root.setAttribute("data-theme", state);
+        try { localStorage.setItem(KEY, state); } catch (e) {}
+      }
+      btn.dataset.state = state;
+      var label = btn.dataset["label" + state.charAt(0).toUpperCase() + state.slice(1)];
+      if (label) {
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("title", label);
+      }
+    }
+
+    btn.addEventListener("click", function () {
+      var next = order[(order.indexOf(read()) + 1) % order.length];
+      apply(next);
+    });
+
+    apply(read());
+  }
+
   function init() {
     document.querySelectorAll("select").forEach(enhanceSelect);
+    initTheme();
+    enhanceMenu();
   }
 
   if (document.readyState === "loading") {

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://pixelrock.net/a-propos.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/a-propos.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/a-propos.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
@@ -14,7 +16,8 @@
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/contact.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/contact.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
@@ -22,46 +25,80 @@
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/og-image.png</image:loc>
+      <image:title>Pixelrock — des sites web bâtis sur le roc</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/projet-gnosis.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/projet-gnosis.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/project-gnosis.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/projet-gnosis.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/gnosis.png</image:loc>
+      <image:title>GNOSIS, application d'apprentissage</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/projet-kibi-label.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/projet-kibi-label.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/project-kibi-label.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/projet-kibi-label.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/kibi.png</image:loc>
+      <image:title>Kibi Label, institut de beauté à Chicoutimi</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/projet-zarya.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/projet-zarya.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/project-zarya.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/projet-zarya.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/zarya.png</image:loc>
+      <image:title>Zarya, plateforme de faisabilité de voyage</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/realisations.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/realisations.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/realisations.html"/>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/kibi.png</image:loc>
+      <image:title>Kibi Label</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/gnosis.png</image:loc>
+      <image:title>GNOSIS</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/zarya.png</image:loc>
+      <image:title>Zarya</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/services.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/services.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/packages.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/services.html"/>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -70,7 +107,8 @@
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/a-propos.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/about.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/a-propos.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
@@ -78,7 +116,8 @@
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/contact.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/contact.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/contact.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
@@ -86,46 +125,80 @@
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/og-image.png</image:loc>
+      <image:title>Pixelrock — des sites web bâtis sur le roc</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/en/project-gnosis.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/projet-gnosis.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/project-gnosis.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/projet-gnosis.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/gnosis.png</image:loc>
+      <image:title>GNOSIS, application d'apprentissage</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/en/project-kibi-label.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/projet-kibi-label.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/project-kibi-label.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/projet-kibi-label.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/kibi.png</image:loc>
+      <image:title>Kibi Label, institut de beauté à Chicoutimi</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/en/project-zarya.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/projet-zarya.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/project-zarya.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/projet-zarya.html"/>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/zarya.png</image:loc>
+      <image:title>Zarya, plateforme de faisabilité de voyage</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/en/work.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/realisations.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/work.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/realisations.html"/>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/kibi.png</image:loc>
+      <image:title>Kibi Label</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/gnosis.png</image:loc>
+      <image:title>GNOSIS</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://pixelrock.net/assets/zarya.png</image:loc>
+      <image:title>Zarya</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://pixelrock.net/en/packages.html</loc>
     <xhtml:link rel="alternate" hreflang="fr-CA" href="https://pixelrock.net/services.html"/>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://pixelrock.net/en/packages.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixelrock.net/services.html"/>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

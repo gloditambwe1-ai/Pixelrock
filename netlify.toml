@@ -1,6 +1,15 @@
 [build]
   publish = "."
 
+# Netlify réécrit par défaut les liens en adresses sans .html et sert les deux
+# formes : deux adresses pour une même page. On désactive la réécriture pour que
+# l'adresse canonique soit la seule servie, et on redirige l'autre forme vers elle.
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = false
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -14,8 +23,93 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 [[redirects]]
   from = "https://www.pixelrock.net/*"
   to = "https://pixelrock.net/:splat"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/services"
+  to = "/services.html"
+  status = 301
+
+[[redirects]]
+  from = "/realisations"
+  to = "/realisations.html"
+  status = 301
+
+[[redirects]]
+  from = "/a-propos"
+  to = "/a-propos.html"
+  status = 301
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 301
+
+[[redirects]]
+  from = "/merci"
+  to = "/merci.html"
+  status = 301
+
+[[redirects]]
+  from = "/projet-kibi-label"
+  to = "/projet-kibi-label.html"
+  status = 301
+
+[[redirects]]
+  from = "/projet-gnosis"
+  to = "/projet-gnosis.html"
+  status = 301
+
+[[redirects]]
+  from = "/projet-zarya"
+  to = "/projet-zarya.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/packages"
+  to = "/en/packages.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/work"
+  to = "/en/work.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/about"
+  to = "/en/about.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/contact"
+  to = "/en/contact.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/thank-you"
+  to = "/en/thank-you.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/project-kibi-label"
+  to = "/en/project-kibi-label.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/project-gnosis"
+  to = "/en/project-gnosis.html"
+  status = 301
+
+[[redirects]]
+  from = "/en/project-zarya"
+  to = "/en/project-zarya.html"
+  status = 301

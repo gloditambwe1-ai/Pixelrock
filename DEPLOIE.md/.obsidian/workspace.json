@@ -11,10 +11,14 @@
             "id": "8c3624a815bcba68",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "deploiement.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Nouvel onglet"
+              "title": "deploiement"
             }
           }
         ]
@@ -75,8 +79,7 @@
               "title": "Signets"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -185,7 +188,7 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "0c2b4f1aed47a2da",
+  "active": "8c3624a815bcba68",
   "lastOpenFiles": [
     "deploiement.md",
     "Bienvenue.md",

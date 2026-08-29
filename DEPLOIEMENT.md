@@ -69,17 +69,92 @@ Puis activer HTTPS (*Domain management → HTTPS → Verify DNS configuration*).
 La redirection de `www.pixelrock.net` vers `pixelrock.net` est déjà dans
 `netlify.toml`.
 
-## Après la mise en ligne
+## Le site est en ligne
 
-1. **Google Search Console** — ajouter la propriété `pixelrock.net`, la valider
-   par enregistrement DNS `TXT`, puis soumettre `https://pixelrock.net/sitemap.xml`.
-2. **Fiche Google Business** — c'est le levier le plus fort du référencement
-   local, devant le site lui-même. Catégorie « Concepteur de sites Web »,
-   zone de service : Saguenay, Chicoutimi, Jonquière, La Baie, Alma. Ajouter le
-   lien vers `pixelrock.net`. Demander un avis à chaque client livré.
-3. **Bing Webmaster Tools** — import direct depuis Search Console, deux minutes.
-4. **Vérifier le rendu du partage** avec le validateur de liens de Facebook et
-   de LinkedIn (l'image sociale est `assets/og-image.png`).
+Hébergé sur Netlify, domaine `pixelrock.net` enregistré chez Cloudflare.
+
+### Cloudflare : garder les enregistrements en « DNS only »
+
+C'est le point à vérifier en premier. Netlify est déjà un réseau de diffusion :
+activer le proxy Cloudflare (le nuage orange) met deux CDN en série, et ça cause
+deux problèmes courants — le renouvellement automatique du certificat Netlify
+échoue, et si le mode SSL de Cloudflare est réglé sur « Flexible », le site part
+en boucle de redirection.
+
+**Recommandé :** nuage **gris** (DNS only) sur les enregistrements qui pointent
+vers Netlify. Le HTTPS reste assuré par Netlify.
+
+Si tu tiens au proxy Cloudflare, alors le mode SSL/TLS doit impérativement être
+**Full (strict)**, jamais Flexible.
+
+### Une seule adresse par page
+
+Netlify réécrit par défaut les liens en adresses sans `.html` **et** sert les
+deux formes : `/services` et `/services.html` renvoyaient la même page, alors que
+la balise canonique désigne `/services.html`. Deux adresses pour un même contenu,
+c'est exactement ce que Google pénalise en diluant le signal.
+
+Le `netlify.toml` livré désactive cette réécriture (`pretty_urls = false`) et
+ajoute une redirection 301 de chaque forme courte vers la forme canonique. Après
+le prochain déploiement, vérifier que `pixelrock.net/services` redirige bien vers
+`pixelrock.net/services.html`.
+
+## Se faire trouver sur Google
+
+Dans l'ordre d'impact réel, du plus fort au plus faible.
+
+### 1. La fiche Google Business — de loin le plus important
+
+Pour une entreprise de service locale, la fiche pèse plus lourd que le site
+lui-même : c'est elle qui fait apparaître Pixelrock dans le bloc de résultats
+locaux et sur Maps, au-dessus des résultats classiques.
+
+- Catégorie principale : **Concepteur de sites Web**. Catégories secondaires :
+  Service de marketing Internet, Développeur de logiciels.
+- Pas d'adresse publique : cocher « Je livre des biens et services à mes clients »
+  et définir la zone desservie — Saguenay, Chicoutimi, Jonquière, La Baie, Alma.
+- Le nom, le téléphone et l'adresse doivent être **écrits exactement pareil**
+  partout sur le web. Google recoupe ces mentions ; une variante de numéro ou de
+  nom affaiblit le signal.
+- Ajouter le lien vers `pixelrock.net`, des photos, et les services avec leurs prix.
+- **Demander un avis à chaque client livré.** C'est le facteur de classement local
+  le plus sous-utilisé. Trois avis détaillés valent mieux que trente lignes de
+  contenu supplémentaire sur le site.
+
+### 2. Google Search Console
+
+1. Ajouter la propriété de type **Domaine** (`pixelrock.net`), qui couvre le
+   français et l'anglais d'un coup.
+2. La validation se fait par enregistrement `TXT` — c'est immédiat puisque le DNS
+   est chez Cloudflare.
+3. Soumettre `https://pixelrock.net/sitemap.xml`.
+4. Demander l'indexation de la page d'accueil et de la page Forfaits via
+   l'inspection d'URL, pour ne pas attendre le passage naturel du robot.
+5. Revenir après deux semaines regarder le rapport de couverture et les requêtes
+   qui amènent déjà des impressions : c'est là que se trouvent les vrais mots-clés
+   à renforcer, pas dans les suppositions.
+
+### 3. Les citations locales
+
+Chaque mention cohérente du nom, du téléphone et de la ville sur un autre site
+renforce le référencement local. Les plus utiles dans la région :
+
+- Chambre de commerce et d'industrie Saguenay-Le Fjord
+- Promotion Saguenay, répertoire des entreprises
+- Pages Jaunes
+- Le profil LinkedIn, avec le lien vers le site
+
+### 4. Bing
+
+Bing Webmaster Tools permet d'importer directement depuis Search Console. Deux
+minutes, et ça couvre aussi les recherches faites depuis Windows et ChatGPT.
+
+### Ce qu'il ne faut pas faire
+
+Acheter des liens, publier des pages de villes quasi identiques (« conception web
+Chicoutimi », « conception web Jonquière »…), ou bourrer les textes de mots-clés.
+Google traite les trois comme des signaux de spam, et pour un site neuf de cette
+taille, le risque dépasse largement le gain.
 
 ## Ce qui est déjà en place pour le référencement
 
@@ -94,4 +169,9 @@ La redirection de `www.pixelrock.net` vers `pixelrock.net` est déjà dans
 - Icônes d'application pour Windows, Android et iOS, plus le manifeste
 - Version anglaise complète sous `/en/`, avec `hreflang` réciproques et
   `x-default` sur le français
+- Plan de site enrichi : dates de dernière modification réelles, alternates de
+  langue et images déclarées
+- Une fiche de page typée par gabarit (`AboutPage`, `ContactPage`,
+  `CollectionPage`, `ItemPage`) rattachée à la fiche d'entreprise
+- Une seule adresse indexable par page, la forme courte redirigeant en 301
 - Aucun débordement horizontal de 320 px à 1920 px, sur les dix-huit pages

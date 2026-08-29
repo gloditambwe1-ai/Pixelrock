@@ -23,6 +23,7 @@ Pour régénérer les icônes : python3 src/make_icons.py
 
 import base64
 import json
+from datetime import datetime, timezone
 import re
 import shutil
 from pathlib import Path
@@ -85,6 +86,11 @@ LANGS = {
         "skip": "Aller au contenu",
         "brand_aria": "Pixelrock, accueil",
         "lang_aria": "Langue",
+        "nav_aria": "Navigation principale",
+        "menu_aria": "Menu",
+        "theme": {"auto": "Thème : automatique. Passer au thème clair.",
+                  "light": "Thème : clair. Passer au thème sombre.",
+                  "dark": "Thème : sombre. Revenir au thème du système."},
         "band_title": "Un premier rendez-vous, ça ne coûte rien.",
         "band_text": "Trente minutes, sans engagement, chez vous ou en visioconférence. Réponse sous 24 heures, sept jours sur sept.",
         "foot_tagline": "Conception de sites web à Saguenay, pour le Saguenay–Lac-Saint-Jean et tout le Québec.",
@@ -120,6 +126,11 @@ LANGS = {
         "skip": "Skip to content",
         "brand_aria": "Pixelrock, home",
         "lang_aria": "Language",
+        "nav_aria": "Main navigation",
+        "menu_aria": "Menu",
+        "theme": {"auto": "Theme: automatic. Switch to light.",
+                  "light": "Theme: light. Switch to dark.",
+                  "dark": "Theme: dark. Back to the system theme."},
         "band_title": "A first meeting costs nothing.",
         "band_text": "Thirty minutes, no obligation, at your place or by video call. Reply within 24 hours, seven days a week.",
         "foot_tagline": "Web design in Saguenay, for Saguenay–Lac-Saint-Jean and all of Quebec.",
@@ -141,6 +152,13 @@ LANGS = {
         },
     },
 }
+
+# posé avant le premier rendu : évite tout clignotement de thème
+BOOT = (
+    '<script>(function(){var d=document.documentElement;d.classList.add("js");'
+    'try{var t=localStorage.getItem("pixelrock-theme");'
+    'if(t==="light"||t==="dark")d.setAttribute("data-theme",t);}catch(e){}})();</script>'
+)
 
 FONTS = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
@@ -191,22 +209,37 @@ def lang_switch(lang, fr_name):
 
 def nav_html(lang, current, fr_name):
     L = LANGS[lang]
-    links = []
+    links, panel = [], []
     for key, href, label in L["nav"]:
         cur = ' aria-current="page"' if key == current else ""
         links.append(f'<a href="{out_name(lang, href)}"{cur}>{label}</a>')
+        panel.append(f'<a href="{out_name(lang, href)}"{cur}>{label}</a>')
     return f"""<header class="nav">
   <div class="wrap nav__inner">
     <a class="brand" href="{out_name(lang, 'index.html')}" aria-label="{L['brand_aria']}">
       {mark_svg("brand__mark")}
       <span class="brand__name">{SITE}</span>
     </a>
-    <nav class="nav__links" aria-label="{'Navigation principale' if lang == 'fr' else 'Main navigation'}">
+    <nav class="nav__links" aria-label="{L['nav_aria']}">
       {chr(10).join("      " + l for l in links).strip()}
     </nav>
     <div class="nav__end">
+      <button class="theme" type="button" data-state="auto"
+        data-label-auto="{L['theme']['auto']}" data-label-light="{L['theme']['light']}" data-label-dark="{L['theme']['dark']}"
+        aria-label="{L['theme']['auto']}" title="{L['theme']['auto']}"><span class="theme__icon" aria-hidden="true"></span></button>
       {lang_switch(lang, fr_name)}
       <a class="nav__cta" href="{out_name(lang, 'contact.html')}">{L['cta']}</a>
+      <details class="menu">
+        <summary class="menu__btn" aria-label="{L['menu_aria']}"><span class="menu__bars" aria-hidden="true"></span></summary>
+        <div class="menu__panel">
+          <div class="wrap">
+            <nav class="menu__links" aria-label="{L['menu_aria']}">
+              {chr(10).join("              " + l for l in panel).strip()}
+            </nav>
+            <a class="btn btn--primary menu__cta" href="{out_name(lang, 'contact.html')}">{L['cta']}</a>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 </header>"""
@@ -357,12 +390,61 @@ def ld_breadcrumb(lang, fr_name):
     }
 
 
-def json_ld(lang, fr_name, body):
-    graph = [ld_business(lang)]
-    if fr_name == "index.html":
-        graph.append({"@type": "WebSite", "@id": f"{DOMAIN}/#site",
-                      "url": DOMAIN + "/", "name": SITE, "inLanguage": ["fr-CA", "en-CA"],
-                      "publisher": {"@id": f"{DOMAIN}/#pixelrock"}})
+PAGE_TYPE = {
+    "index.html": "WebPage",
+    "services.html": "WebPage",
+    "realisations.html": "CollectionPage",
+    "a-propos.html": "AboutPage",
+    "contact.html": "ContactPage",
+    "projet-kibi-label.html": "ItemPage",
+    "projet-gnosis.html": "ItemPage",
+    "projet-zarya.html": "ItemPage",
+}
+
+PROJETS = {
+    "projet-kibi-label.html": ("Kibi Label", "https://kibilabel.ca", "WebSite"),
+    "projet-gnosis.html": ("GNOSIS", "https://gnosislearn.com", "WebApplication"),
+    "projet-zarya.html": ("Zarya", "https://zaryaonline.ca", "WebApplication"),
+}
+
+
+def ld_webpage(lang, fr_name, meta):
+    node = {
+        "@type": PAGE_TYPE.get(fr_name, "WebPage"),
+        "@id": f"{DOMAIN}{url_of(lang, fr_name)}#page",
+        "url": DOMAIN + url_of(lang, fr_name),
+        "name": meta.get("title", SITE),
+        "description": meta.get("description", ""),
+        "inLanguage": LANGS[lang]["locale"],
+        "isPartOf": {"@id": f"{DOMAIN}/#site"},
+        "about": {"@id": f"{DOMAIN}/#pixelrock"},
+        "primaryImageOfPage": {"@type": "ImageObject", "url": f"{DOMAIN}/assets/og-image.png"},
+    }
+    if fr_name in PROJETS:
+        nom, site, kind = PROJETS[fr_name]
+        node["mainEntity"] = {
+            "@type": kind, "name": nom, "url": site,
+            "author": {"@type": "Person", "name": "Glodi Tambwe"},
+        }
+    if fr_name == "a-propos.html":
+        node["mainEntity"] = {
+            "@type": "Person",
+            "name": "Glodi Tambwe",
+            "jobTitle": "Développeur web" if lang == "fr" else "Web developer",
+            "worksFor": {"@id": f"{DOMAIN}/#pixelrock"},
+            "email": EMAIL,
+            "telephone": TEL_HREF,
+            "address": {"@type": "PostalAddress", "addressLocality": VILLE,
+                        "addressRegion": REGION, "addressCountry": PAYS},
+        }
+    return node
+
+
+def json_ld(lang, fr_name, body, meta):
+    graph = [ld_business(lang), ld_webpage(lang, fr_name, meta)]
+    graph.append({"@type": "WebSite", "@id": f"{DOMAIN}/#site",
+                  "url": DOMAIN + "/", "name": SITE, "inLanguage": ["fr-CA", "en-CA"],
+                  "publisher": {"@id": f"{DOMAIN}/#pixelrock"}})
     bc = ld_breadcrumb(lang, fr_name)
     if bc:
         graph.append(bc)
@@ -427,6 +509,7 @@ def render(lang, fr_name, meta, body):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{BOOT}
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="{robots}">
@@ -454,7 +537,7 @@ def render(lang, fr_name, meta, body):
 {FONTS}
 <link rel="stylesheet" href="{p}assets/styles.css">
 <script src="{p}assets/app.js" defer></script>
-{json_ld(lang, fr_name, body)}
+{json_ld(lang, fr_name, body, meta)}
 </head>
 <body>
 <a class="skip" href="#contenu">{L['skip']}</a>
@@ -491,9 +574,31 @@ def webmanifest():
     }, ensure_ascii=False, indent=2)
 
 
+def page_lastmod(fr_name):
+    """Date de dernière modification réelle du contenu, pas la date de construction."""
+    stamps = []
+    for lang, L in LANGS.items():
+        f = ROOT / L["dir"] / fr_name
+        if f.exists():
+            stamps.append(f.stat().st_mtime)
+    stamps.append((SRC / "styles.css").stat().st_mtime)
+    return datetime.fromtimestamp(max(stamps), tz=timezone.utc).strftime("%Y-%m-%d")
+
+
+# images à déclarer pour chaque page, avec leur légende
+PAGE_IMAGES = {
+    "index.html": [("og-image.png", "Pixelrock — des sites web bâtis sur le roc")],
+    "realisations.html": [("kibi.png", "Kibi Label"), ("gnosis.png", "GNOSIS"), ("zarya.png", "Zarya")],
+    "projet-kibi-label.html": [("kibi.png", "Kibi Label, institut de beauté à Chicoutimi")],
+    "projet-gnosis.html": [("gnosis.png", "GNOSIS, application d'apprentissage")],
+    "projet-zarya.html": [("zarya.png", "Zarya, plateforme de faisabilité de voyage")],
+}
+
+
 def sitemap(indexed):
     weight = {"index.html": "1.0", "services.html": "0.9", "contact.html": "0.9",
               "realisations.html": "0.8"}
+    freq = {"index.html": "weekly", "services.html": "monthly", "realisations.html": "monthly"}
     rows = []
     for lang in ("fr", "en"):
         for fr_name in indexed:
@@ -504,14 +609,21 @@ def sitemap(indexed):
             )
             alts += (f'\n    <xhtml:link rel="alternate" hreflang="x-default" '
                      f'href="{DOMAIN}{url_of("fr", fr_name)}"/>')
+            images = "".join(
+                f'\n    <image:image>\n      <image:loc>{DOMAIN}/assets/{src}</image:loc>'
+                f'\n      <image:title>{title}</image:title>\n    </image:image>'
+                for src, title in PAGE_IMAGES.get(fr_name, [])
+            )
             rows.append(
                 f"  <url>\n    <loc>{loc}</loc>{alts}\n"
-                f"    <changefreq>monthly</changefreq>\n"
-                f"    <priority>{weight.get(fr_name, '0.7')}</priority>\n  </url>"
+                f"    <lastmod>{page_lastmod(fr_name)}</lastmod>\n"
+                f"    <changefreq>{freq.get(fr_name, 'yearly')}</changefreq>\n"
+                f"    <priority>{weight.get(fr_name, '0.7')}</priority>{images}\n  </url>"
             )
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n'
-            '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+            '        xmlns:xhtml="http://www.w3.org/1999/xhtml"\n'
+            '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n'
             + "\n".join(rows) + "\n</urlset>\n")
 
 
@@ -526,6 +638,15 @@ Sitemap: {DOMAIN}/sitemap.xml
 NETLIFY = """[build]
   publish = "."
 
+# Netlify réécrit par défaut les liens en adresses sans .html et sert les deux
+# formes : deux adresses pour une même page. On désactive la réécriture pour que
+# l'adresse canonique soit la seule servie, et on redirige l'autre forme vers elle.
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = false
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -539,12 +660,35 @@ NETLIFY = """[build]
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 [[redirects]]
   from = "https://www.pixelrock.net/*"
   to = "https://pixelrock.net/:splat"
   status = 301
   force = true
-"""
+REDIRECTS"""
+
+
+
+
+def netlify_redirects():
+    """Les adresses sans .html redirigent vers la page canonique, dans les deux langues."""
+    out = []
+    for lang in LANGS:
+        for fr_name in SLUG_EN:
+            name = out_name(lang, fr_name)
+            if name == "index.html":
+                continue
+            base = "" if lang == "fr" else "/en"
+            out.append(
+                f'\n[[redirects]]\n  from = "{base}/{name[:-5]}"\n'
+                f'  to = "{base}/{name}"\n  status = 301\n'
+            )
+    return "".join(out)
 
 
 def build():
@@ -575,7 +719,7 @@ def build():
     (OUT / "site.webmanifest").write_text(webmanifest(), encoding="utf-8")
     (OUT / "sitemap.xml").write_text(sitemap(indexed), encoding="utf-8")
     (OUT / "robots.txt").write_text(ROBOTS, encoding="utf-8")
-    (OUT / "netlify.toml").write_text(NETLIFY, encoding="utf-8")
+    (OUT / "netlify.toml").write_text(NETLIFY.replace("REDIRECTS", netlify_redirects()), encoding="utf-8")
     print("  site.webmanifest, sitemap.xml, robots.txt, netlify.toml")
 
     build_preview()
@@ -616,7 +760,9 @@ def build_preview():
       <a href="#realisations">Réalisations</a>
       <a href="#contact">Contact</a>
     </nav>
-    <div class="nav__end"><a class="nav__cta" href="#contact">Prendre rendez-vous</a></div>
+    <div class="nav__end">
+      <button class="theme" type="button" data-state="auto" data-label-auto="Thème : automatique. Passer au thème clair." data-label-light="Thème : clair. Passer au thème sombre." data-label-dark="Thème : sombre. Revenir au thème du système." aria-label="Thème : automatique. Passer au thème clair."><span class="theme__icon" aria-hidden="true"></span></button>
+      <a class="nav__cta" href="#contact">Prendre rendez-vous</a></div>
   </div>
 </header>"""
 
