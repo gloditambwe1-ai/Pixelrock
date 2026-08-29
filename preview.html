@@ -111,8 +111,10 @@ a { color: inherit; }
 
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-.wrap { width: min(1140px, 100% - 3rem); margin-inline: auto; }
-.wrap--narrow { width: min(820px, 100% - 3rem); margin-inline: auto; }
+/* la largeur suit l'écran : 1140 px sur un portable, jusqu'à 1360 sur un grand
+   moniteur, sans jamais dépasser la largeur disponible moins les marges */
+.wrap { width: min(clamp(1140px, 76vw, 1360px), 100% - 3rem); margin-inline: auto; }
+.wrap--narrow { width: min(clamp(820px, 52vw, 940px), 100% - 3rem); margin-inline: auto; }
 
 .rule { border-top: 1px solid var(--line); }
 
@@ -532,7 +534,7 @@ section { padding-block: var(--sec-pad); }
 .etape h3 { font-size: var(--fs-xl); letter-spacing: -0.02em; }
 .etape p { color: var(--ink-2); font-size: var(--fs-sm); }
 
-@media (max-width: 760px) {
+@media (max-width: 920px) {
   .etape { grid-template-columns: 3rem minmax(0, 1fr); }
   .etape p { grid-column: 2; }
 }
@@ -968,6 +970,84 @@ select.cselect__native {
 .chantier__col, .prose, .prose *, .faq, .etape { min-width: 0; }
 .prose pre, .prose code { overflow-wrap: anywhere; }
 .stat-row, .case-facts { min-width: 0; }
+
+
+/* ============================================================
+   Composition selon la taille de l'écran
+   ============================================================ */
+
+/* ---------- tablettes : plus d'orphelin en fin de grille ----------
+   Trois éléments dans deux colonnes laissaient le dernier seul à
+   mi-largeur. Il occupe désormais toute la rangée. */
+
+@media (min-width: 620px) and (max-width: 1040px) {
+  .forfaits { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .forfaits > :last-child { grid-column: 1 / -1; }
+
+  .constat { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 1.75rem; }
+  .constat__item:last-child { grid-column: 1 / -1; }
+  .constat__item:last-child p { max-width: 64ch; }
+
+  .foot__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem; }
+}
+
+@media (max-width: 860px) {
+  .case-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .foot__inner { grid-template-columns: 1fr; gap: 2rem; }
+  .case-facts { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* la dernière tuile de statistique comble la rangée plutôt que de laisser un trou */
+.stat-row > :last-child { grid-column-end: -1; }
+
+/* ---------- grands écrans ----------
+   Au-delà de 1500 px, une mise en page calée sur un portable paraît
+   sous-dimensionnée : le texte, les respirations et la marque grandissent. */
+
+@media (min-width: 1500px) {
+  :root {
+    --fs-base: 1.125rem;
+    --fs-sm:   0.9375rem;
+    --fs-lg:   1.3125rem;
+    --fs-xl:   1.6875rem;
+    --fs-2xl:  2.25rem;
+    --fs-3xl:  3.25rem;
+    --fs-hero: 5.75rem;
+    --fs-page: 4rem;
+    --sec-pad: 7.5rem;
+  }
+
+  .hero { padding-block: 8rem 6rem; }
+  .hero__markwrap .mark { width: min(300px, 72%); }
+  .hero__inner { gap: 6rem; }
+
+  /* les titres de section respiraient mal : à cette taille de police,
+     62ch de large les cassaient en trois ou quatre lignes courtes */
+  .sec-head { max-width: 46rem; }
+  .phead__inner .lede { max-width: 60ch; }
+
+  .logo-tile { width: 160px; height: 160px; }
+  .projet { grid-template-columns: 160px minmax(0, 1fr); }
+  .case-head { grid-template-columns: 160px minmax(0, 1fr); }
+
+  .pledge { padding: 1.6rem 1.75rem; }
+  .forfait { padding: 2.25rem 2rem 2.4rem; }
+  .projet { gap: 2.25rem; padding: 2rem; }
+  .etape { padding-block: 2rem; }
+  .entretien { padding: 3.75rem; }
+}
+
+@media (min-width: 2000px) {
+  :root { --sec-pad: 8.5rem; }
+  .hero { padding-block: 9rem 7rem; }
+  /* la trame du héros couvre la largeur réelle de l'écran */
+  .hero::before { background-size: 56px 56px, 56px 56px; }
+}
 
 </style>
 <header class="nav">
