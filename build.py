@@ -89,9 +89,12 @@ LANGS = {
         "lang_aria": "Langue",
         "nav_aria": "Navigation principale",
         "menu_aria": "Menu",
-        "theme": {"auto": "Thème : automatique. Passer au thème clair.",
-                  "light": "Thème : clair. Passer au thème sombre.",
-                  "dark": "Thème : sombre. Revenir au thème du système."},
+        "theme": {
+            "aria": "Thème",
+            "titre": "Thème",
+            "court": {"light": "Clair", "dark": "Sombre", "auto": "Système"},
+            "long": {"light": "Clair", "dark": "Sombre", "auto": "Système"},
+        },
         "band_title": "Un premier rendez-vous, ça ne coûte rien.",
         "band_text": "Trente minutes, sans engagement, chez vous ou en visioconférence. Réponse sous 24 heures, sept jours sur sept.",
         "foot_tagline": "Conception de sites web à Saguenay, pour le Saguenay–Lac-Saint-Jean et tout le Québec.",
@@ -129,9 +132,12 @@ LANGS = {
         "lang_aria": "Language",
         "nav_aria": "Main navigation",
         "menu_aria": "Menu",
-        "theme": {"auto": "Theme: automatic. Switch to light.",
-                  "light": "Theme: light. Switch to dark.",
-                  "dark": "Theme: dark. Back to the system theme."},
+        "theme": {
+            "aria": "Theme",
+            "titre": "Theme",
+            "court": {"light": "Light", "dark": "Dark", "auto": "System"},
+            "long": {"light": "Light", "dark": "Dark", "auto": "System"},
+        },
         "band_title": "A first meeting costs nothing.",
         "band_text": "Thirty minutes, no obligation, at your place or by video call. Reply within 24 hours, seven days a week.",
         "foot_tagline": "Web design in Saguenay, for Saguenay–Lac-Saint-Jean and all of Quebec.",
@@ -218,6 +224,44 @@ def lang_switch(lang, fr_name):
     return "".join(out)
 
 
+def theme_options(lang, inline=False):
+    """Les trois choix, en toutes lettres. Sans JavaScript ils ne servent à rien :
+    la CSS ne les affiche que si le script a posé la classe js.
+
+    En ligne, les séparateurs sont des éléments à part : cliquer un point
+    ne doit pas changer le thème."""
+    T = LANGS[lang]["theme"]
+    morceaux = []
+    for i, cle in enumerate(("light", "dark", "auto")):
+        if inline and i:
+            morceaux.append('<span class="theme-sep" aria-hidden="true">·</span>')
+        morceaux.append(
+            f'<button type="button" data-theme-choice="{cle}" data-court="{T["court"][cle]}"'
+            f' aria-pressed="false">{T["long"][cle]}</button>'
+        )
+    return "".join(morceaux)
+
+
+def theme_switch(lang):
+    """Barre de navigation : un menu déroulant qui montre le thème courant."""
+    T = LANGS[lang]["theme"]
+    return f"""<details class="theme">
+        <summary class="theme__btn" aria-label="{T['aria']}">
+          <span class="theme__icon" aria-hidden="true"></span>
+          <span class="theme__now">{T['court']['auto']}</span>
+        </summary>
+        <div class="theme__menu" role="group" aria-label="{T['aria']}">{theme_options(lang)}</div>
+      </details>"""
+
+
+def theme_block(lang):
+    """Menu mobile : les trois choix sur une seule ligne, juste sous le bouton
+    de rendez-vous. Du texte, rien d'autre."""
+    T = LANGS[lang]["theme"]
+    return (f'<div class="theme-choix" role="group" aria-label="{T["aria"]}">'
+            f'{theme_options(lang, inline=True)}</div>')
+
+
 def nav_html(lang, current, fr_name):
     L = LANGS[lang]
     links, panel = [], []
@@ -235,9 +279,7 @@ def nav_html(lang, current, fr_name):
       {chr(10).join("      " + l for l in links).strip()}
     </nav>
     <div class="nav__end">
-      <button class="theme" type="button" data-state="auto"
-        data-label-auto="{L['theme']['auto']}" data-label-light="{L['theme']['light']}" data-label-dark="{L['theme']['dark']}"
-        aria-label="{L['theme']['auto']}" title="{L['theme']['auto']}"><span class="theme__icon" aria-hidden="true"></span></button>
+      {theme_switch(lang)}
       {lang_switch(lang, fr_name)}
       <a class="nav__cta" href="{out_name(lang, 'contact.html')}">{L['cta']}</a>
       <details class="menu">
@@ -248,6 +290,7 @@ def nav_html(lang, current, fr_name):
               {chr(10).join("              " + l for l in panel).strip()}
             </nav>
             <a class="btn btn--primary menu__cta" href="{out_name(lang, 'contact.html')}">{L['cta']}</a>
+            {theme_block(lang)}
           </div>
         </div>
       </details>
@@ -792,7 +835,7 @@ def build_preview():
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav__end">
-      <button class="theme" type="button" data-state="auto" data-label-auto="Thème : automatique. Passer au thème clair." data-label-light="Thème : clair. Passer au thème sombre." data-label-dark="Thème : sombre. Revenir au thème du système." aria-label="Thème : automatique. Passer au thème clair."><span class="theme__icon" aria-hidden="true"></span></button>
+      {theme_switch("fr")}
       <a class="nav__cta" href="#contact">Prendre rendez-vous</a></div>
   </div>
 </header>"""

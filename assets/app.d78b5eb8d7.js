@@ -238,42 +238,64 @@
      --------------------------------------------------------------- */
 
   function initTheme() {
-    var btn = document.querySelector(".theme");
-    if (!btn) return;
+    var choix = document.querySelectorAll("[data-theme-choice]");
+    if (!choix.length) return;
 
     var root = document.documentElement;
-    var KEY = "pixelrock-theme";
-    var order = ["auto", "light", "dark"];
+    var CLE = "pixelrock-theme";
 
-    function read() {
+    function lire() {
       try {
-        var v = localStorage.getItem(KEY);
+        var v = localStorage.getItem(CLE);
         return v === "light" || v === "dark" ? v : "auto";
       } catch (e) { return "auto"; }
     }
 
-    function apply(state) {
-      if (state === "auto") {
+    function appliquer(etat) {
+      if (etat === "auto") {
         root.removeAttribute("data-theme");
-        try { localStorage.removeItem(KEY); } catch (e) {}
+        try { localStorage.removeItem(CLE); } catch (e) {}
       } else {
-        root.setAttribute("data-theme", state);
-        try { localStorage.setItem(KEY, state); } catch (e) {}
+        root.setAttribute("data-theme", etat);
+        try { localStorage.setItem(CLE, etat); } catch (e) {}
       }
-      btn.dataset.state = state;
-      var label = btn.dataset["label" + state.charAt(0).toUpperCase() + state.slice(1)];
-      if (label) {
-        btn.setAttribute("aria-label", label);
-        btn.setAttribute("title", label);
-      }
+      peindre(etat);
     }
 
-    btn.addEventListener("click", function () {
-      var next = order[(order.indexOf(read()) + 1) % order.length];
-      apply(next);
+    function peindre(etat) {
+      choix.forEach(function (b) {
+        b.setAttribute("aria-pressed", b.dataset.themeChoice === etat ? "true" : "false");
+      });
+      // le libellé du menu de la barre montre le thème courant
+      document.querySelectorAll(".theme").forEach(function (d) {
+        d.dataset.state = etat;
+        var actif = d.querySelector('[data-theme-choice="' + etat + '"]');
+        var mot = d.querySelector(".theme__now");
+        if (mot && actif) mot.textContent = actif.dataset.court || actif.textContent;
+      });
+    }
+
+    choix.forEach(function (b) {
+      b.addEventListener("click", function () {
+        appliquer(b.dataset.themeChoice);
+        var d = b.closest("details");
+        if (d) { d.open = false; d.querySelector("summary").focus(); }
+        var menu = b.closest(".menu");
+        if (menu) menu.open = false;
+      });
     });
 
-    apply(read());
+    // fermeture du menu de thème : Échap et clic à l'extérieur
+    document.querySelectorAll("details.theme").forEach(function (d) {
+      document.addEventListener("pointerdown", function (e) {
+        if (d.open && !d.contains(e.target)) d.open = false;
+      }, true);
+      d.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && d.open) { d.open = false; d.querySelector("summary").focus(); }
+      });
+    });
+
+    peindre(lire());
   }
 
   function init() {
