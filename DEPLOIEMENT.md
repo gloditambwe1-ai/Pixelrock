@@ -175,3 +175,19 @@ taille, le risque dépasse largement le gain.
   `CollectionPage`, `ItemPage`) rattachée à la fiche d'entreprise
 - Une seule adresse indexable par page, la forme courte redirigeant en 301
 - Aucun débordement horizontal de 320 px à 1920 px, sur les dix-huit pages
+
+## La navigation sur téléphone
+
+Sous 940 px, la navigation passe dans une barre fixée au bas de l'écran
+(`.tabbar`, générée par `tabbar()` dans `build.py`) : cinq onglets — Accueil,
+Forfaits, Projets, À propos, Contact — avec une icône dessinée à angles droits,
+comme le pilier de la marque. L'onglet de la page courante est souligné en
+orange. La barre respecte l'encoche du bas (`env(safe-area-inset-bottom)`) et le
+`body` reçoit la marge correspondante, pour que rien ne finisse caché dessous.
+
+Le bouton sandwich de la barre du haut ne sert donc plus à naviguer : il ne
+contient plus que la prise de rendez-vous et le choix du thème. Le sélecteur
+FR/EN, lui, reste visible en permanence dans la barre du haut.
+
+Pour changer les onglets : la liste `tabs` de chaque langue dans `LANGS`, et les
+tracés SVG dans `TAB_ICONS`, indexés par la même clé.

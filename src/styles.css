@@ -428,7 +428,7 @@ section { padding-block: var(--sec-pad); }
   overflow-y: auto;
 }
 
-.menu__links { display: flex; flex-direction: column; }
+.menu__links { display: none; }
 
 .menu__links a {
   font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg);
@@ -443,7 +443,7 @@ section { padding-block: var(--sec-pad); }
 .menu__links a:hover { border-left-color: var(--accent); }
 .menu__links a[aria-current="page"] { border-left-color: var(--accent); color: var(--accent); }
 
-.menu__cta { margin-top: 1.25rem; width: 100%; justify-content: center; }
+.menu__cta { margin-top: 0.25rem; width: 100%; justify-content: center; }
 
 @media (max-width: 940px) {
   .nav__links { display: none; }
@@ -452,6 +452,80 @@ section { padding-block: var(--sec-pad); }
   .js .theme { display: none; }
   /* sur petit écran le bouton de la barre cède la place au menu */
   .nav__end > .nav__cta { display: none; }
+}
+
+/* ---------- barre du bas (téléphones et petites tablettes) ----------
+   La navigation descend sous le pouce : une icône et un mot par page,
+   la prise de rendez-vous en accent à l'extrémité. Elle reste posée
+   au-dessus du bord bas, encoche de l'appareil comprise. */
+
+.tabbar { display: none; }
+
+.tabbar__inner {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.tabbar__link {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.28rem;
+  padding: 0.5rem 0.15rem 0.45rem;
+  text-decoration: none;
+  color: var(--ink-2);
+  border-top: 3px solid transparent;
+  min-height: 54px;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.tabbar__icon { width: 21px; height: 21px; flex: none; }
+
+.tabbar__mot {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabbar__link:hover { color: var(--ink); }
+.tabbar__link:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+
+.tabbar__link[aria-current="page"] {
+  color: var(--accent);
+  border-top-color: var(--accent);
+}
+
+.tabbar__link--cta { color: var(--accent); }
+.tabbar__link--cta[aria-current="page"] { color: var(--accent); }
+
+@media (max-width: 940px) {
+  .tabbar {
+    display: block;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    background: color-mix(in srgb, var(--paper-raised) 94%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--ink);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* le contenu ne doit jamais finir caché derrière la barre */
+  body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media (max-width: 360px) {
+  .tabbar__mot { font-size: 0.625rem; }
+  .tabbar__icon { width: 19px; height: 19px; }
+}
+
+@media print {
+  .tabbar { display: none; }
+  body { padding-bottom: 0; }
 }
 
 /* ---------- héros d'accueil ---------- */

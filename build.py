@@ -83,6 +83,15 @@ LANGS = {
             ("realisations", "realisations.html", "Réalisations"),
             ("apropos", "a-propos.html", "À propos"),
         ],
+        "tabs": [
+            ("accueil", "index.html", "Accueil"),
+            ("services", "services.html", "Forfaits"),
+            ("realisations", "realisations.html", "Projets"),
+            ("apropos", "a-propos.html", "À propos"),
+            ("contact", "contact.html", "Contact"),
+        ],
+        "tab_aria": "Navigation du site",
+        "reglages_aria": "Langue et thème",
         "cta": "Prendre rendez-vous",
         "skip": "Aller au contenu",
         "brand_aria": "Pixelrock, accueil",
@@ -126,6 +135,15 @@ LANGS = {
             ("realisations", "realisations.html", "Work"),
             ("apropos", "a-propos.html", "About"),
         ],
+        "tabs": [
+            ("accueil", "index.html", "Home"),
+            ("services", "services.html", "Packages"),
+            ("realisations", "realisations.html", "Work"),
+            ("apropos", "a-propos.html", "About"),
+            ("contact", "contact.html", "Contact"),
+        ],
+        "tab_aria": "Site navigation",
+        "reglages_aria": "Language and theme",
         "cta": "Book a meeting",
         "skip": "Skip to content",
         "brand_aria": "Pixelrock, home",
@@ -262,13 +280,47 @@ def theme_block(lang):
             f'{theme_options(lang, inline=True)}</div>')
 
 
+# Icônes de la barre du bas : tracées à angles droits, sans arrondi,
+# pour rester dans la même famille que le pilier de la marque.
+TAB_ICONS = {
+    "accueil": '<path d="M3 11 12 3l9 8"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M10 20v-5h4v5"/>',
+    "services": '<path d="M3 4h18v5H3z"/><path d="M3 12h18v3H3z"/><path d="M3 18h18v3H3z"/>',
+    "realisations": '<path d="M3 3h7v7H3z"/><path d="M14 3h7v7h-7z"/><path d="M3 14h7v7H3z"/><path d="M14 14h7v7h-7z"/>',
+    "apropos": '<path d="M8 3h8v8H8z"/><path d="M3 21v-3h18v3"/>',
+    "contact": '<path d="M3 5h18v14H3z"/><path d="m3 6 9 7 9-7"/>',
+}
+
+
+def tab_icon(key):
+    return (
+        '<svg class="tabbar__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" '
+        'fill="none" stroke="currentColor" stroke-width="1.8">'
+        f'{TAB_ICONS[key]}</svg>'
+    )
+
+
+def tabbar(lang, current, fr_name):
+    """Sur téléphone, la navigation vit en bas de l'écran, sous le pouce.
+    Elle double la barre du haut sur grand écran, où elle est masquée."""
+    L = LANGS[lang]
+    items = []
+    for key, href, label in L["tabs"]:
+        cur = ' aria-current="page"' if key == current else ""
+        mod = ' class="tabbar__link tabbar__link--cta"' if key == "contact" else ' class="tabbar__link"'
+        items.append(
+            f'<a href="{out_name(lang, href)}"{mod}{cur}>{tab_icon(key)}'
+            f'<span class="tabbar__mot">{label}</span></a>'
+        )
+    return (f'<nav class="tabbar" aria-label="{L["tab_aria"]}">'
+            f'<div class="tabbar__inner">{"".join(items)}</div></nav>')
+
+
 def nav_html(lang, current, fr_name):
     L = LANGS[lang]
-    links, panel = [], []
+    links = []
     for key, href, label in L["nav"]:
         cur = ' aria-current="page"' if key == current else ""
         links.append(f'<a href="{out_name(lang, href)}"{cur}>{label}</a>')
-        panel.append(f'<a href="{out_name(lang, href)}"{cur}>{label}</a>')
     return f"""<header class="nav">
   <div class="wrap nav__inner">
     <a class="brand" href="{out_name(lang, 'index.html')}" aria-label="{L['brand_aria']}">
@@ -283,12 +335,9 @@ def nav_html(lang, current, fr_name):
       {lang_switch(lang, fr_name)}
       <a class="nav__cta" href="{out_name(lang, 'contact.html')}">{L['cta']}</a>
       <details class="menu">
-        <summary class="menu__btn" aria-label="{L['menu_aria']}"><span class="menu__bars" aria-hidden="true"></span></summary>
+        <summary class="menu__btn" aria-label="{L['reglages_aria']}"><span class="menu__bars" aria-hidden="true"></span></summary>
         <div class="menu__panel">
           <div class="wrap">
-            <nav class="menu__links" aria-label="{L['menu_aria']}">
-              {chr(10).join("              " + l for l in panel).strip()}
-            </nav>
             <a class="btn btn--primary menu__cta" href="{out_name(lang, 'contact.html')}">{L['cta']}</a>
             {theme_block(lang)}
           </div>
@@ -601,6 +650,7 @@ def render(lang, fr_name, meta, body):
 </main>
 {'' if meta.get('nav') == 'contact' else cta_band(lang)}
 {footer_html(lang)}
+{tabbar(lang, meta.get('nav', ''), fr_name)}
 </body>
 </html>
 """
