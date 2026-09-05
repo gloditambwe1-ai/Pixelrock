@@ -81,6 +81,15 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Le navigateur mobile ne réajuste pas la taille du texte de son côté :
+   la mise en page reste celle qui a été mesurée. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* une ancre ne se cache jamais derrière la barre du bas */
+  scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
 body {
   margin: 0;
   background-color: var(--paper);
@@ -103,6 +112,11 @@ h1, h2, h3, h4 {
 
 p { margin: 0; }
 a { color: inherit; }
+
+/* Plancher de sécurité : aucun champ du site, même ajouté plus tard, ne
+   descend sous 16 px — c'est le seuil au-dessous duquel iOS zoome tout seul
+   à la mise au point. */
+input, select, textarea, button { font-size: max(16px, 1rem); font-family: inherit; }
 
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
@@ -477,7 +491,8 @@ section { padding-block: var(--sec-pad); }
   transition: color 120ms ease, border-color 120ms ease;
 }
 
-.tabbar__icon { width: 21px; height: 21px; flex: none; }
+.tabbar__pastille { display: flex; align-items: center; justify-content: center; }
+.tabbar__icon { width: 21px; height: 21px; flex: none; display: block; }
 
 .tabbar__mot {
   font-family: var(--font-display);
@@ -499,8 +514,23 @@ section { padding-block: var(--sec-pad); }
   border-top-color: var(--accent);
 }
 
-.tabbar__link--cta { color: var(--accent); }
-.tabbar__link--cta[aria-current="page"] { color: var(--accent); }
+/* Le contact, au centre : un bloc plein qui remonte légèrement au-dessus de la
+   barre. Même carré sans arrondi et même ombre décalée que les boutons du site. */
+.tabbar__link--cta { color: var(--ink); }
+
+.tabbar__link--cta .tabbar__pastille {
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0.5rem 0.95rem;
+  margin-top: -1.35rem;
+  border: 1px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.tabbar__link--cta .tabbar__mot { color: var(--accent); }
+
+.tabbar__link--cta[aria-current="page"] { color: var(--ink); }
+.tabbar__link--cta[aria-current="page"] .tabbar__pastille { box-shadow: 0 0 0 var(--ink); transform: translate(3px, 3px); }
 
 @media (max-width: 940px) {
   .tabbar {
@@ -516,6 +546,12 @@ section { padding-block: var(--sec-pad); }
 
   /* le contenu ne doit jamais finir caché derrière la barre */
   body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)); }
+
+  /* pendant la saisie, la barre s'efface : le clavier occupe déjà le bas de
+     l'écran, et la voir sauter au-dessus donnerait exactement la secousse
+     qu'on cherche à éviter */
+  body.saisie .tabbar { display: none; }
+  body.saisie { padding-bottom: 0; }
 }
 
 @media (max-width: 360px) {
@@ -932,11 +968,27 @@ section { padding-block: var(--sec-pad); }
 }
 .field .req { color: var(--accent); }
 
+/* ---------- pas de zoom intempestif à la saisie ----------
+   iOS grossit la page dès qu'un champ passe sous 16 px. La taille est donc
+   plancherée en pixels — pas en rem, qu'un réglage du navigateur pourrait
+   ramener sous le seuil. `touch-action` supprime en prime le zoom du
+   double-tapotement et le délai de 300 ms qui va avec. */
+.field input,
+.field select,
+.field textarea,
+.cselect__btn,
+.cselect__option,
+.btn,
+button,
+[role="option"] {
+  touch-action: manipulation;
+}
+
 .field input,
 .field select,
 .field textarea {
   width: 100%;
-  font-family: var(--font-body); font-size: var(--fs-base);
+  font-family: var(--font-body); font-size: max(16px, var(--fs-base));
   color: var(--ink);
   background: var(--paper);
   border: 1px solid var(--line-strong);
@@ -960,6 +1012,7 @@ section { padding-block: var(--sec-pad); }
    mais disparaît visuellement dès que le script s'exécute. */
 
 select.cselect__native {
+  font-size: 16px;
   position: absolute;
   width: 1px; min-width: 0; max-width: 1px; height: 1px;
   padding: 0; margin: -1px; border: 0;
@@ -973,7 +1026,7 @@ select.cselect__native {
 .cselect__btn {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   width: 100%;
-  font-family: var(--font-body); font-size: var(--fs-base); text-align: left;
+  font-family: var(--font-body); font-size: max(16px, var(--fs-base)); text-align: left;
   color: var(--ink);
   background: var(--paper);
   border: 1px solid var(--line-strong);

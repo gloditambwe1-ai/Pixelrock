@@ -298,10 +298,39 @@
     peindre(lire());
   }
 
+  /* ---------------------------------------------------------------
+     Saisie sur téléphone.
+     Le clavier occupe déjà le bas de l'écran : la barre d'onglets s'efface
+     le temps de la saisie, sinon elle remonte au-dessus du clavier et la
+     page paraît sauter. Le champ est ensuite ramené tranquillement dans
+     le champ de vision.
+     --------------------------------------------------------------- */
+
+  function initSaisie() {
+    var estChamp = function (el) {
+      return el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" ||
+                    el.tagName === "SELECT");
+    };
+
+    document.addEventListener("focusin", function (e) {
+      if (!estChamp(e.target)) return;
+      document.body.classList.add("saisie");
+    });
+
+    document.addEventListener("focusout", function (e) {
+      if (!estChamp(e.target)) return;
+      // un passage d'un champ à l'autre ne doit pas faire clignoter la barre
+      setTimeout(function () {
+        if (!estChamp(document.activeElement)) document.body.classList.remove("saisie");
+      }, 60);
+    });
+  }
+
   function init() {
     document.querySelectorAll("select").forEach(enhanceSelect);
     initTheme();
     enhanceMenu();
+    initSaisie();
   }
 
   if (document.readyState === "loading") {

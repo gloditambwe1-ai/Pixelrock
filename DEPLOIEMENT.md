@@ -9,7 +9,7 @@ npx serve .          # sert le site sur http://localhost:3000
 
 `build.py` produit les 9 pages françaises à la racine, les 9 pages anglaises
 dans `en/`, `assets/styles.css`, `assets/app.js`, `sitemap.xml`, `robots.txt`,
-`site.webmanifest`, `netlify.toml` et `preview.html`.
+`site.webmanifest` et `netlify.toml`.
 
 Ne modifie jamais les fichiers HTML de la racine ni ceux de `en/` à la main :
 ils sont écrasés à chaque construction. Le contenu vit dans `src/pages/`
@@ -180,9 +180,11 @@ taille, le risque dépasse largement le gain.
 
 Sous 940 px, la navigation passe dans une barre fixée au bas de l'écran
 (`.tabbar`, générée par `tabbar()` dans `build.py`) : cinq onglets — Accueil,
-Forfaits, Projets, À propos, Contact — avec une icône dessinée à angles droits,
-comme le pilier de la marque. L'onglet de la page courante est souligné en
-orange. La barre respecte l'encoche du bas (`env(safe-area-inset-bottom)`) et le
+Forfaits, **Contact**, Projets, À propos — avec une icône dessinée à angles
+droits, comme le pilier de la marque. Le contact occupe le centre, dans un bloc
+orange qui remonte au-dessus de la barre : c'est la position la plus facile à
+atteindre au pouce et l'action qui rapporte. L'onglet de la page courante est
+souligné en orange. La barre respecte l'encoche du bas (`env(safe-area-inset-bottom)`) et le
 `body` reçoit la marge correspondante, pour que rien ne finisse caché dessous.
 
 Le bouton sandwich de la barre du haut ne sert donc plus à naviguer : il ne

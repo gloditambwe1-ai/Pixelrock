@@ -13,7 +13,7 @@ L'anglais est une traduction complète, servie depuis /en/.
   src/app.js                                 → assets/app.js
   src/assets/*                               → assets/*
 
-Produit aussi sitemap.xml, robots.txt, site.webmanifest, netlify.toml et preview.html.
+Produit aussi sitemap.xml, robots.txt, site.webmanifest et netlify.toml.
 
 Pour modifier la navigation, le pied de page ou les données de référencement : ce fichier.
 Pour modifier le contenu d'une page : src/pages/<page>.html (ou src/pages-en/)
@@ -21,7 +21,6 @@ Pour modifier le style : src/styles.css
 Pour régénérer les icônes : python3 src/make_icons.py
 """
 
-import base64
 import hashlib
 import json
 from datetime import datetime, timezone
@@ -86,9 +85,9 @@ LANGS = {
         "tabs": [
             ("accueil", "index.html", "Accueil"),
             ("services", "services.html", "Forfaits"),
+            ("contact", "contact.html", "Contact"),
             ("realisations", "realisations.html", "Projets"),
             ("apropos", "a-propos.html", "À propos"),
-            ("contact", "contact.html", "Contact"),
         ],
         "tab_aria": "Navigation du site",
         "reglages_aria": "Langue et thème",
@@ -138,9 +137,9 @@ LANGS = {
         "tabs": [
             ("accueil", "index.html", "Home"),
             ("services", "services.html", "Packages"),
+            ("contact", "contact.html", "Contact"),
             ("realisations", "realisations.html", "Work"),
             ("apropos", "a-propos.html", "About"),
-            ("contact", "contact.html", "Contact"),
         ],
         "tab_aria": "Site navigation",
         "reglages_aria": "Language and theme",
@@ -301,14 +300,16 @@ def tab_icon(key):
 
 def tabbar(lang, current, fr_name):
     """Sur téléphone, la navigation vit en bas de l'écran, sous le pouce.
-    Elle double la barre du haut sur grand écran, où elle est masquée."""
+    Le contact occupe le centre — la position la plus facile à atteindre au
+    pouce, et l'action qui compte le plus. Masquée au-delà de 940 px."""
     L = LANGS[lang]
     items = []
     for key, href, label in L["tabs"]:
         cur = ' aria-current="page"' if key == current else ""
         mod = ' class="tabbar__link tabbar__link--cta"' if key == "contact" else ' class="tabbar__link"'
         items.append(
-            f'<a href="{out_name(lang, href)}"{mod}{cur}>{tab_icon(key)}'
+            f'<a href="{out_name(lang, href)}"{mod}{cur}>'
+            f'<span class="tabbar__pastille">{tab_icon(key)}</span>'
             f'<span class="tabbar__mot">{label}</span></a>'
         )
     return (f'<nav class="tabbar" aria-label="{L["tab_aria"]}">'
@@ -845,62 +846,3 @@ def build():
     (OUT / "robots.txt").write_text(ROBOTS, encoding="utf-8")
     (OUT / "netlify.toml").write_text(NETLIFY.replace("REDIRECTS", netlify_redirects()), encoding="utf-8")
     print("  site.webmanifest, sitemap.xml, robots.txt, netlify.toml")
-
-    build_preview()
-
-
-def data_uri(path):
-    return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode()
-
-
-def build_preview():
-    """Version autonome de l'accueil français, en un seul fichier, pour partage."""
-    pages = ROOT / "src" / "pages"
-    _, body = parse((pages / "index.html").read_text(encoding="utf-8"))
-    css = (SRC / "styles.css").read_text(encoding="utf-8")
-    js = (SRC / "app.js").read_text(encoding="utf-8")
-
-    contact = parse((pages / "contact.html").read_text(encoding="utf-8"))[1]
-    contact = contact.replace('class="phead"', 'class="phead" id="contact"', 1)
-    body = body + "\n" + contact
-
-    for name in ("kibi", "gnosis", "zarya"):
-        body = body.replace(f"assets/{name}.png", data_uri(ASSETS / f"{name}.png"))
-
-    body = (
-        body.replace('href="projet-kibi-label.html"', 'href="https://kibilabel.ca" target="_blank" rel="noopener"')
-        .replace('href="projet-gnosis.html"', 'href="https://gnosislearn.com" target="_blank" rel="noopener"')
-        .replace('href="projet-zarya.html"', 'href="https://zaryaonline.ca" target="_blank" rel="noopener"')
-        .replace("Lire l'étude de cas &rarr;", "Voir le site en ligne &rarr;")
-    )
-    body = re.sub(r'href="services\.html[^"]*"', 'href="#forfaits"', body)
-    body = body.replace('href="contact.html"', 'href="#contact"')
-
-    nav = f"""<header class="nav">
-  <div class="wrap nav__inner">
-    <a class="brand" href="#haut">{mark_svg("brand__mark")}<span class="brand__name">{SITE}</span></a>
-    <nav class="nav__links" aria-label="Navigation principale">
-      <a href="#forfaits">Forfaits</a>
-      <a href="#realisations">Réalisations</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="nav__end">
-      {theme_switch("fr")}
-      <a class="nav__cta" href="#contact">Prendre rendez-vous</a></div>
-  </div>
-</header>"""
-
-    foot = footer_html("fr")
-    foot = re.sub(r'href="(services|realisations|a-propos|merci|projet-[a-z-]+)\.html[^"]*"',
-                  'href="#forfaits"', foot)
-    foot = foot.replace('href="index.html"', 'href="#haut"')
-
-    html = (f"<title>{SITE}</title>\n{FONTS}\n<style>\n{css}\n</style>\n"
-            f'{nav}\n<main id="haut">\n{body}\n</main>\n{foot}\n<script>\n{js}\n</script>')
-    (ROOT / "preview.html").write_text(html, encoding="utf-8")
-    print("  preview.html (aperçu autonome)")
-
-
-if __name__ == "__main__":
-    build()
-    print("\nSite généré — servir avec :  npx serve .")

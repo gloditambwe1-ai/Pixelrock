@@ -1,3 +1,14 @@
-﻿pixelrock-site.zip
+# archives de livraison
+*.zip
 
-pixelrock-publicite.zip
+# publicités : gros fichiers, et ils n'ont rien à faire sur le site en ligne
+publicite/
+
+# système et outils
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+node_modules/
+.vscode/
+.obsidian/
